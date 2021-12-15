@@ -39,9 +39,14 @@ module ActiveModelService
       end
     end
 
-    # Add error to :base once
-    def add_error(message)
+    # Add error to :base continue
+    def error(message)
       errors.add(:base, message)
+    end
+
+    # Add error to :base and stop
+    def error!(message)
+      error(message)
       raise Error, message
     end
   end

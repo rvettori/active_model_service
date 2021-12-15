@@ -6,8 +6,20 @@ class LoginService < ActiveModelService::Call
   validates :login, :pass, presence: true
 
   def call
-    add_error("Login/pass invalid") if @login != @pass
+    error!("Login/pass invalid") if @login != @pass
 
+    "ok"
+  end
+end
+
+class LoginErrorsService < ActiveModelService::Call
+  attr_reader :login, :pass
+
+  validates :login, :pass, presence: true
+
+  def call
+    error("fail 1")
+    error("fail 2")
     "ok"
   end
 end
@@ -49,5 +61,18 @@ RSpec.describe ActiveModelService do
     it "must be valid when errors empty"
     it "must raise error when reserved words"
     it "must raise error when attribute is not defined"
+  end
+
+  describe "fail" do
+    let(:login_errors_service) { LoginErrorsService.call(login: "123", pass: "123") }
+
+    it "must be invalid with thwo errors" do
+      expect(login_errors_service).not_to be_valid
+      expect(login_errors_service.errors.messages[:base].count).to eq(2)
+      expect(login_errors_service.errors.messages[:base].first).to eq("fail 1")
+      expect(login_errors_service.errors.messages[:base].last).to eq("fail 2")
+      expect(login_errors_service.errors.messages[:base].last).to eq("fail 2")
+      expect(login_errors_service).not_to be_valid
+    end
   end
 end
