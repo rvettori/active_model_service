@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'active_model_service/version'
-require 'active_model'
+require_relative "active_model_service/version"
+require "active_model"
 
 module ActiveModelService
   class Error < StandardError; end
