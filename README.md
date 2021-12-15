@@ -24,7 +24,8 @@ Or install it yourself as:
 
 Define the service class and invoke your bussiness logic by method `call`.
 Use defaults validators of activemodel.
-When you need raise error, use `add_error('my error message')`. This erro showin at :base key errors of activemodel.
+When you need raise error, use `error!('error adn stop')`. This erro showin at :base key errors of activemodel.
+When you need add multiples errors base, use `error('my error message without stop')`. Need `raise Error` after to stop
 You can use all behaviors of activemodel.
 
 Example:
@@ -36,7 +37,7 @@ class LoginService < ActiveModelService::Call
     validates :login, :pass, presence: true
 
     def call
-    add_error('Login/pass invalid') if @login != @pass
+    error!('Login/pass invalid') if @login != @pass
 
     'login is valid'
     end
