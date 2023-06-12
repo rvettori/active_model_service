@@ -14,6 +14,20 @@ module ActiveModelService
 
     attr_reader :result, :valid
 
+    def initialize(attributes = {})
+      instance = self
+      attributes.each do |k, v|
+        raise Error, "Attribute #{k} is a reserve word!" if %i[result error valid call].include?(k.to_sym)
+
+        unless instance.methods.include?(k.to_sym)
+          raise Error, "Attribute is not defined! Add `attr :#{k}` in #{instance.class}"
+        end
+
+        instance.instance_variable_set("@#{k}".to_sym, v)
+      end
+      instance._call
+    end
+
     def _call
       @result = call if send(:run_validations!)
     rescue Error => e
@@ -25,18 +39,19 @@ module ActiveModelService
     end
 
     def self.call(attributes = {})
-      new.tap do |instance|
-        attributes.each do |k, v|
-          raise Error, "Attribute #{k} is a reserve word!" if %i[result error valid call].include?(k.to_sym)
+      new(attributes)
+      # new.tap do |instance|
+      #   attributes.each do |k, v|
+      #     raise Error, "Attribute #{k} is a reserve word!" if %i[result error valid call].include?(k.to_sym)
 
-          unless instance.methods.include?(k.to_sym)
-            raise Error, "Attribute is not defined! Add `attr :#{k}` in #{instance.class}"
-          end
+      #     unless instance.methods.include?(k.to_sym)
+      #       raise Error, "Attribute is not defined! Add `attr :#{k}` in #{instance.class}"
+      #     end
 
-          instance.instance_variable_set("@#{k}".to_sym, v)
-        end
-        instance._call
-      end
+      #     instance.instance_variable_set("@#{k}".to_sym, v)
+      #   end
+      #   instance._call
+      # end
     end
 
     # Add error to :base continue
