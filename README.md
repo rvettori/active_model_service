@@ -39,6 +39,8 @@ class LoginService < ActiveModelService::Call
     def call
     error!('Login/pass invalid') if @login != @pass
 
+    message 'successfully logged in'
+
     'login is valid'
     end
 end
@@ -46,19 +48,25 @@ end
 # Success
 login_service = LoginService.call(login: 'admin', pass: 'admin')
 login_service.valid? # => true
+login_service.invalid? # => false
 login_service.errors # => {}
+login_service.messages # => ['successfully logged in']
 login_service.result # => true
 
 # Validation error
 login_service = LoginService.call(login: 'admin', pass: nil)
 login_service.valid? # => false
+login_service.invalid? # => true
 login_service.errors # => {pass: "Can't be blank"}
+login_service.messages # => []
 login_service.result # => nil
 
 # add_error validation
 login_service = LoginService.call(login: 'admin', pass: 'wrong')
 login_service.valid? # => false
+login_service.invalid? # => true
 login_service.errors # => {base: "Login/pass invalid"}
+login_service.messages # => []
 login_service.result # => nil
 
 ```

@@ -12,12 +12,13 @@ module ActiveModelService
 
     class ValueError < StandardError; end
 
-    attr_reader :result, :valid
+    attr_reader :result, :valid, :messages
 
     def initialize(attributes = {})
+      @messages = []
       instance = self
       attributes.each do |k, v|
-        raise Error, "Attribute #{k} is a reserve word!" if %i[result error valid call].include?(k.to_sym)
+        raise Error, "Attribute #{k} is a reserve word!" if %i[result error valid call messages].include?(k.to_sym)
 
         unless instance.methods.include?(k.to_sym)
           raise Error, "Attribute is not defined! Add `attr :#{k}` in #{instance.class}"
@@ -40,18 +41,6 @@ module ActiveModelService
 
     def self.call(attributes = {})
       new(attributes)
-      # new.tap do |instance|
-      #   attributes.each do |k, v|
-      #     raise Error, "Attribute #{k} is a reserve word!" if %i[result error valid call].include?(k.to_sym)
-
-      #     unless instance.methods.include?(k.to_sym)
-      #       raise Error, "Attribute is not defined! Add `attr :#{k}` in #{instance.class}"
-      #     end
-
-      #     instance.instance_variable_set("@#{k}".to_sym, v)
-      #   end
-      #   instance._call
-      # end
     end
 
     # Add error to :base continue
@@ -63,6 +52,10 @@ module ActiveModelService
     def error!(message)
       error(message)
       raise Error, message
+    end
+
+    def message(message)
+      @messages << message
     end
   end
 end

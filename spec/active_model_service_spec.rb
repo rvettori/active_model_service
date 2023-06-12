@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require "debug"
 
 class LoginService < ActiveModelService::Call
   attr_reader :login, :pass
@@ -24,6 +25,33 @@ class LoginErrorsService < ActiveModelService::Call
   end
 end
 
+class LoginMessageService < ActiveModelService::Call
+  attr_reader :login, :pass
+
+  validates :login, :pass, presence: true
+
+  def call
+    if @login != @pass
+      message("Login/pass invalid")
+      error!("Login/pass invalid")
+    end
+
+    message("default message")
+
+    "ok"
+  end
+end
+
+class LoginEmptyMessageService < ActiveModelService::Call
+  attr_reader :login, :pass
+
+  validates :login, :pass, presence: true
+
+  def call
+    "ok"
+  end
+end
+
 RSpec.describe ActiveModelService do
   it "has a version number" do
     expect(ActiveModelService::VERSION).not_to be nil
@@ -38,6 +66,10 @@ RSpec.describe ActiveModelService do
     let(:login_service_valid) { LoginService.call(login: "123", pass: "123") }
     let(:login_service_invalid) { LoginService.call(login: "123") }
     let(:login_service_call_invalid) { LoginService.call(login: "123", pass: "12") }
+
+    let(:login_message_service_valid) { LoginMessageService.call(login: "123", pass: "123") }
+    let(:login_message_service_invalid) { LoginMessageService.call(login: "123", pass: "12") }
+    let(:login_message_service_empty) { LoginEmptyMessageService.call(login: "123", pass: "123") }
 
     it "must respond to call" do
       expect(LoginService).respond_to?(:call)
@@ -55,6 +87,25 @@ RSpec.describe ActiveModelService do
     it "must be invalid in call logic at base key" do
       expect(login_service_call_invalid).not_to be_valid
       expect(login_service_call_invalid.errors.messages[:base].first).to eq("Login/pass invalid")
+    end
+
+    it "must have default message" do
+      expect(login_message_service_valid.messages).to include("default message")
+      expect(login_message_service_valid).to be_valid
+    end
+
+    it "must have default message and invalid message" do
+      expect(login_message_service_invalid.messages).to include("Login/pass invalid")
+      expect(login_message_service_invalid).not_to be_valid
+    end
+
+    it "must be empty messages" do
+      expect(login_message_service_empty.messages).to be_empty
+      expect(login_message_service_empty).to be_valid
+    end
+
+    it "must respond invalid" do
+      expect(login_message_service_invalid.invalid?).to be_truthy
     end
 
     it "must invoke call when run_validation be valid"
