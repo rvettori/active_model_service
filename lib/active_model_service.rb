@@ -54,8 +54,22 @@ module ActiveModelService
       raise Error, message
     end
 
-    def message(message)
-      @messages << message
+    # Add message to messages
+    # type: :default, :info, :warning, :success, :whatever...
+    # default type: :default
+    def message(message, type = :default)
+      @messages << { message: message, type: type.to_sym }
+    end
+
+    # Return all messages
+    def messages
+      @messages.map { |m| m[:message] }
+    end
+
+    # Return all messages of type
+    def messages_of(type)
+      msg = @messages.select { |m| m[:type] == type.to_sym }
+      msg.map { |m| m[:message] }
     end
   end
 end

@@ -37,6 +37,8 @@ class LoginMessageService < ActiveModelService::Call
     end
 
     message("default message")
+    message("warning message", :warning)
+    message("my custom message type", :hard_exception)
 
     "ok"
   end
@@ -91,6 +93,15 @@ RSpec.describe ActiveModelService do
 
     it "must have default message" do
       expect(login_message_service_valid.messages).to include("default message")
+      expect(login_message_service_valid.messages).to include("warning message")
+      expect(login_message_service_valid.messages).to include("my custom message type")
+      expect(login_message_service_valid).to be_valid
+    end
+
+    it "must have default success" do
+      expect(login_message_service_valid.messages_of(:default)).to include("default message")
+      expect(login_message_service_valid.messages_of(:warning)).to include("warning message")
+      expect(login_message_service_valid.messages_of(:hard_exception)).to include("my custom message type")
       expect(login_message_service_valid).to be_valid
     end
 
@@ -101,6 +112,8 @@ RSpec.describe ActiveModelService do
 
     it "must be empty messages" do
       expect(login_message_service_empty.messages).to be_empty
+      expect(login_message_service_empty.messages_of(:default)).to be_empty
+      expect(login_message_service_empty.messages_of(:whatever)).to be_empty
       expect(login_message_service_empty).to be_valid
     end
 
