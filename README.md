@@ -32,7 +32,7 @@ Example:
 
 ```ruby
 class LoginService < ActiveModelService::Call
-    attr_reader :login, :pass
+    call_params :login, :pass
 
     validates :login, :pass, presence: true
 

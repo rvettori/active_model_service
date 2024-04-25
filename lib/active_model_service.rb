@@ -12,7 +12,7 @@ module ActiveModelService
 
     class ValueError < StandardError; end
 
-    attr_reader :result, :valid, :messages
+    attr_reader :result, :valid
 
     def initialize(attributes = {})
       @messages = []
@@ -20,8 +20,9 @@ module ActiveModelService
       attributes.each do |k, v|
         raise Error, "Attribute #{k} is a reserve word!" if %i[result error valid call messages].include?(k.to_sym)
 
+        # TODO: Validate call_params
         unless instance.methods.include?(k.to_sym)
-          raise Error, "Attribute is not defined! Add `attr :#{k}` in #{instance.class}"
+          raise Error, "Attribute is not defined! Add `call_params :#{k}` in #{instance.class}"
         end
 
         instance.instance_variable_set("@#{k}".to_sym, v)
@@ -67,9 +68,23 @@ module ActiveModelService
     end
 
     # Return all messages of type
-    def messages_of(type)
-      msg = @messages.select { |m| m[:type] == type.to_sym }
+    def messages_of(message_type)
+      msg = @messages.select { |m| m[:type] == message_type.to_sym }
       msg.map { |m| m[:message] }
+    end
+
+    class << self
+      def call_params(*attribute_names)
+        # define_method(:call_params) do |*_args|
+        #   instance_variable_set(:@call_params, attribute_names.dup)
+        # end
+
+        attribute_names.each do |attribute_name|
+          define_method(attribute_name.to_sym) do
+            instance_variable_get(:"@#{attribute_name}")
+          end
+        end
+      end
     end
   end
 end

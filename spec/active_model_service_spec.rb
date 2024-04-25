@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 require "debug"
 
 class LoginService < ActiveModelService::Call
-  attr_reader :login, :pass
+  call_params :login, :pass
 
   validates :login, :pass, presence: true
 
