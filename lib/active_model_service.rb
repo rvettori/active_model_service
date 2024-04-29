@@ -20,9 +20,11 @@ module ActiveModelService
       attributes.each do |k, v|
         raise Error, "Attribute #{k} is a reserve word!" if %i[result error valid call messages].include?(k.to_sym)
 
-        # TODO: Validate call_params
-        unless instance.methods.include?(k.to_sym)
-          raise Error, "Attribute is not defined! Add `call_params :#{k}` in #{instance.class}"
+        # TODO: raise error at nexet version
+        unless instance.respond_to?(:attr_init) && attr_init&.include?(k.to_sym)
+          msg = "WARNING!!!! Attribute is not defined! Add `attr_init :#{k}` in #{instance.class}"
+          # raise Error, msg
+          puts msg
         end
 
         instance.instance_variable_set("@#{k}".to_sym, v)
@@ -74,11 +76,12 @@ module ActiveModelService
     end
 
     class << self
-      def call_params(*attribute_names)
-        # define_method(:call_params) do |*_args|
-        #   instance_variable_set(:@call_params, attribute_names.dup)
-        # end
+      def attr_init(*attribute_names)
+        define_method(:attr_init) do
+          instance_variable_set(:@attr_init, attribute_names.dup)
+        end
 
+        # TODO: Analize if Remove reader to next version
         attribute_names.each do |attribute_name|
           define_method(attribute_name.to_sym) do
             instance_variable_get(:"@#{attribute_name}")

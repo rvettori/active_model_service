@@ -3,7 +3,7 @@
 require "debug"
 
 class LoginService < ActiveModelService::Call
-  call_params :login, :pass
+  attr_reader :login, :pass
 
   validates :login, :pass, presence: true
 
@@ -15,7 +15,7 @@ class LoginService < ActiveModelService::Call
 end
 
 class LoginErrorsService < ActiveModelService::Call
-  attr_reader :login, :pass
+  attr_init :login, :pass
 
   validates :login, :pass, presence: true
 
@@ -27,7 +27,7 @@ class LoginErrorsService < ActiveModelService::Call
 end
 
 class LoginMessageService < ActiveModelService::Call
-  attr_reader :login, :pass
+  attr_init :login, :pass
 
   validates :login, :pass, presence: true
 
@@ -46,7 +46,7 @@ class LoginMessageService < ActiveModelService::Call
 end
 
 class LoginEmptyMessageService < ActiveModelService::Call
-  attr_reader :login, :pass
+  attr_init :login, :pass
 
   validates :login, :pass, presence: true
 
