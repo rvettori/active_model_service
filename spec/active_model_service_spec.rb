@@ -143,9 +143,9 @@ RSpec.describe ActiveModelService do
 
   describe "new" do
     let(:login_service) { LoginService }
-    let(:login_service_valid) { LoginService.new(login: "123", pass: "123") }
-    let(:login_service_invalid) { LoginService.new(login: "123") }
-    let(:login_service_call_invalid) { LoginService.new(login: "123", pass: "12") }
+    let(:login_service_valid) { LoginService.new(login: "123", pass: "123").call_now }
+    let(:login_service_invalid) { LoginService.new(login: "123").call_now }
+    let(:login_service_call_invalid) { LoginService.new(login: "123", pass: "12").call_now }
 
     it "must be valid" do
       expect(login_service_valid).to be_valid

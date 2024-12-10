@@ -14,6 +14,18 @@ module ActiveModelService
 
     attr_reader :result, :valid
 
+    def self.rescue_from(error_class, with:)
+      define_method(:rescue_with_handler) do |error|
+        send(with, error)
+      end
+
+      define_method(:_call) do
+        @result = call if valid?
+      rescue error_class => e
+        rescue_with_handler(e)
+      end
+    end
+
     def initialize(attributes = {})
       @messages = []
       instance = self
@@ -29,13 +41,16 @@ module ActiveModelService
 
         instance.instance_variable_set("@#{k}".to_sym, v)
       end
-      instance._call
     end
 
-    def _call
-      @result = call if send(:run_validations!)
-    rescue Error => e
-      puts e.message
+    def call_now
+      begin
+        @result = call if send(:run_validations!)
+      rescue Error => e
+        puts e.message
+      end
+
+      self
     end
 
     def valid?(_ = nil)
@@ -43,7 +58,9 @@ module ActiveModelService
     end
 
     def self.call(attributes = {})
-      new(attributes)
+      me = new(attributes)
+      me.call_now
+      me
     end
 
     # Add error to :base continue

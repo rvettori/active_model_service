@@ -69,6 +69,15 @@ login_service.errors # => {base: "Login/pass invalid"}
 login_service.messages # => []
 login_service.result # => nil
 
+
+# alternative use for testing, when needs first instantiate and then execute
+login_service = LoginService.new(login: 'admin', pass: 'admin').call_now
+login_service.valid? # => true
+login_service.invalid? # => false
+login_service.errors # => {}
+login_service.messages # => ['successfully logged in']
+login_service.result # => true
+
 ```
 
 ## Development
