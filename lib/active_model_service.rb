@@ -14,18 +14,6 @@ module ActiveModelService
 
     attr_reader :result, :valid
 
-    def self.rescue_from(error_class, with:)
-      define_method(:rescue_with_handler) do |error|
-        send(with, error)
-      end
-
-      define_method(:_call) do
-        @result = call if valid?
-      rescue error_class => e
-        rescue_with_handler(e)
-      end
-    end
-
     def initialize(attributes = {})
       @messages = []
       instance = self
