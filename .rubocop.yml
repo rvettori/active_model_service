@@ -20,3 +20,6 @@ Style/Documentation:
 
 Layout/LineLength:
   Max: 120
+
+Metrics/CyclomaticComplexity:
+  Max: 10
