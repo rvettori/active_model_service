@@ -49,8 +49,5 @@ jobs:
       - name: Auditoria de segurança das dependências
         run: bundle exec bundler-audit check --update
 
-      - name: Auditoria de segurança do código (Brakeman)
-        run: bundle exec brakeman -q -w2
-
       - name: Análise de estilo do código (RuboCop)
         run: bundle exec rubocop

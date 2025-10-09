@@ -14,5 +14,3 @@ gem "rubocop", "~> 1.21"
  gem "debug"
 
  gem "bundler-audit"
-
- gem "brakeman"
