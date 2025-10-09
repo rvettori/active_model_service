@@ -99,6 +99,10 @@ module ActiveModelService
       errors.full_messages.join(sep) || ""
     end
 
+    def errors_messages
+      errors.full_messages
+    end
+
     # Add message to messages
     # type: :default, :info, :warning, :success, :whatever...
     # default type: :default

@@ -140,6 +140,19 @@ service.errors_as_string # => "first error, Login/pass invalid"
 service.errors_as_string(sep: ' | ') # => "first error | Login/pass invalid"
 ```
 
+#### `errors_messages`
+
+Get all error messages as an array of strings.
+
+```ruby
+service = LoginService.call(login: '123', pass: '12') # This service adds two errors
+service.errors_messages # => ["first error", "Login/pass invalid"]
+
+# For empty errors
+valid_service = LoginService.call(login: 'admin', pass: 'admin')
+valid_service.errors_messages # => []
+```
+
 #### Importing errors
 
 You can import errors from another service or an `ActiveRecord` model.

@@ -67,6 +67,12 @@ RSpec.describe ActiveModelService do
         expect(service.errors_as_string).to eq("first error, Login/pass invalid")
         expect(service.errors_as_string(sep: " | ")).to eq("first error | Login/pass invalid")
       end
+
+      it "formats errors as array" do
+        expect(service.errors_messages).to eq(["first error", "Login/pass invalid"])
+      end
+
+
     end
 
     describe "without attr_init definition" do
