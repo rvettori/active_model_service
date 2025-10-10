@@ -5,7 +5,7 @@ AllCops:
     - "Gemfile"
 
 Metrics/BlockLength:
-  IgnoredMethods: ["describe", "context"]
+  AllowedMethods: ["describe", "context"]
 
 Style/StringLiterals:
   Enabled: true
