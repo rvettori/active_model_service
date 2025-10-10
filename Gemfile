@@ -11,6 +11,8 @@ gem "rspec", "~> 3.0"
 
 gem "rubocop", "~> 1.21"
 
- gem "debug"
+gem "debug"
 
- gem "bundler-audit"
+gem "bundler-audit"
+
+gem "ruby-lsp"
