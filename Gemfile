@@ -11,6 +11,8 @@ gem "rspec", "~> 3.0"
 
 gem "rubocop", "~> 1.21"
 
+gem "rubocop-rubycw", require: false
+
 gem "debug"
 
 gem "bundler-audit"
